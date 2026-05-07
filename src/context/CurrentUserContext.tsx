@@ -32,7 +32,7 @@ export function CurrentUserProvider({ children }: { children: React.ReactNode })
   const refresh = useCallback(() => {
     const token = localStorage.getItem('access_token')
     if (!token) return
-    fetch('/api/v1users/me', { headers: { Authorization: `Bearer ${token}` } })
+    fetch('/api/v1/users/me', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data?.data) setUser(data.data) })
       .catch(() => { })

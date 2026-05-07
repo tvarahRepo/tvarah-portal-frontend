@@ -4,7 +4,9 @@ const BACKEND = process.env.BACKEND_URL || 'https://portal.tvarah.com/api/v1'
 
 async function handler(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const { path } = await params
-  const url = `${BACKEND}/${path.join('/')}`
+  // Strip leading 'v1' segment if present — BACKEND URL already includes /api/v1
+  const segments = path[0] === 'v1' ? path.slice(1) : path
+  const url = `${BACKEND}/${segments.join('/')}`
 
   const headers = new Headers()
   const ct = req.headers.get('Content-Type')
