@@ -1,0 +1,84 @@
+.psc-root {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+/* ── Stepper ── */
+.psc-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.psc-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  border: 2px solid #cbd5e1;
+  flex-shrink: 0;
+  transition: background 0.2s;
+  cursor: default;
+}
+
+.psc-dot.done {
+  background: var(--dot-color);
+  border-color: var(--dot-color);
+}
+
+.psc-dot.active {
+  background: var(--dot-color);
+  border-color: var(--dot-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--dot-color) 25%, transparent);
+}
+
+.psc-dot.rejected {
+  background: #ef4444;
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px #fee2e2;
+}
+
+.psc-line {
+  flex: 1;
+  height: 2px;
+  background: #e2e8f0;
+  min-width: 6px;
+}
+
+.psc-line.done {
+  background: var(--line-color);
+}
+
+/* ── Badges ── */
+.psc-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.psc-stage-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.psc-status-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.psc-status-success  { background: #dcfce7; color: #15803d; }
+.psc-status-warning  { background: #fef9c3; color: #a16207; }
+.psc-status-danger   { background: #fee2e2; color: #dc2626; }
+.psc-status-info     { background: #dbeafe; color: #1d4ed8; }
+.psc-status-default  { background: #f1f5f9; color: #475569; }

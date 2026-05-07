@@ -1,0 +1,95 @@
+/* ── Toast container ─────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  min-width: 240px;
+  max-width: 380px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  pointer-events: all;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* ── Animations ──────────────────────────────────────────── */
+.toast-in {
+  opacity: 1;
+  transform: translateY(0);
+  animation: toast-slide-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.toast-out {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+@keyframes toast-slide-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Types ───────────────────────────────────────────────── */
+.toast-success {
+  background: #fff;
+  border-left: 4px solid #1a7a8a;
+  color: #111827;
+}
+
+.toast-error {
+  background: #fff;
+  border-left: 4px solid #EF4444;
+  color: #111827;
+}
+
+/* ── Icon ────────────────────────────────────────────────── */
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.toast-success .toast-icon {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.toast-error .toast-icon {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+/* ── Message ─────────────────────────────────────────────── */
+.toast-msg {
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* ── Close button ────────────────────────────────────────── */
+.toast-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9CA3AF;
+  padding: 2px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: color 0.12s, background 0.12s;
+}
+.toast-close:hover {
+  color: #374151;
+  background: #F3F4F6;
+}
