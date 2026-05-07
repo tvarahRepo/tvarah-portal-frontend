@@ -32,10 +32,10 @@ export function CurrentUserProvider({ children }: { children: React.ReactNode })
   const refresh = useCallback(() => {
     const token = localStorage.getItem('access_token')
     if (!token) return
-    fetch('/api/users/me', { headers: { Authorization: `Bearer ${token}` } })
+    fetch('/api/v1users/me', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data?.data) setUser(data.data) })
-      .catch(() => {})
+      .catch(() => { })
   }, [])
 
   useEffect(() => { refresh() }, [refresh])
@@ -43,9 +43,9 @@ export function CurrentUserProvider({ children }: { children: React.ReactNode })
   const initials = user
     ? `${user.firstName?.[0] ?? ''}${user.lastName?.[0] ?? ''}`.toUpperCase()
     : '??'
-  const fullName  = user ? `${user.firstName} ${user.lastName}` : '—'
+  const fullName = user ? `${user.firstName} ${user.lastName}` : '—'
   const avatarSrc = user?.keycloakUserId
-    ? `/api/users/${user.keycloakUserId}/avatar`
+    ? `/api/v1/users/${user.keycloakUserId}/avatar`
     : null
 
   return (

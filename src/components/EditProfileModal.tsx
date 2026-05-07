@@ -9,17 +9,17 @@ interface Props {
 }
 
 export default function EditProfileModal({ user, onClose, onSaved }: Props) {
-  const [firstName, setFirstName]     = useState(user.firstName ?? '')
-  const [lastName, setLastName]       = useState(user.lastName ?? '')
+  const [firstName, setFirstName] = useState(user.firstName ?? '')
+  const [lastName, setLastName] = useState(user.lastName ?? '')
   const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber ?? '')
-  const [department, setDepartment]   = useState(user.department ?? '')
-  const [location, setLocation]       = useState(user.location ?? '')
-  const [avatarFile, setAvatarFile]   = useState<File | null>(null)
+  const [department, setDepartment] = useState(user.department ?? '')
+  const [location, setLocation] = useState(user.location ?? '')
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatarUrl ?? null)
-  const [saving, setSaving]           = useState(false)
-  const [error, setError]             = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [departments, setDepartments] = useState<string[]>([])
-  const fileInputRef                  = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -30,7 +30,7 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
   useEffect(() => {
     const token = localStorage.getItem('access_token')
     if (!token) return
-    fetch('/api/departments', { headers: { Authorization: `Bearer ${token}` } })
+    fetch('/api/v1/departments', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.ok ? r.json() : null)
       .then(json => {
         if (!json) return
@@ -38,7 +38,7 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
         const names = list.map(d => (typeof d === 'string' ? d : (d as any).name || (d as any).departmentName || String(d)))
         if (names.length > 0) setDepartments(names)
       })
-      .catch(() => {})
+      .catch(() => { })
   }, [])
 
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -63,7 +63,7 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
       )
       if (avatarFile) formData.append('avatar', avatarFile)
 
-      const res = await fetch('/api/users/me', {
+      const res = await fetch('/api/v1/users/me', {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -89,7 +89,7 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
           <h2 className="epm-title">Edit Profile</h2>
           <button className="epm-close" onClick={onClose} type="button" aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
@@ -104,8 +104,8 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
               }
               <div className="epm-avatar-overlay">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                  <circle cx="12" cy="13" r="4"/>
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                  <circle cx="12" cy="13" r="4" />
                 </svg>
                 <span>Change photo</span>
               </div>
@@ -117,7 +117,7 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
           {error && (
             <div className="epm-error">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               {error}
             </div>

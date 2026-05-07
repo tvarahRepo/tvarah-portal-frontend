@@ -10,7 +10,7 @@ const nextConfig = {
         destination: `${BACKEND}/:path*`,
       },
       {
-        source: '/api/:path*',
+        source: '/api/v1:path*',
         destination: `${BACKEND}/:path*`,
       },
     ]

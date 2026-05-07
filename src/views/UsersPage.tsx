@@ -6,29 +6,29 @@ import './UsersPage.css'
 // ── Config ────────────────────────────────────────────────────────────────────
 
 const ROLE_CFG = {
-  'Admin':       { bg: '#FEF3C7', text: '#92400E', dot: '#F59E0B'  },
-  'Recruiter':   { bg: '#EEF2FF', text: '#4338CA', dot: '#6366F1'  },
-  'HR Manager':  { bg: '#F0FDF4', text: '#166534', dot: '#22C55E'  },
-  'Interviewer': { bg: '#F0FDFA', text: '#0F766E', dot: '#14B8A6'  },
-  'Viewer':      { bg: '#F1F5F9', text: '#475569', dot: '#94A3B8'  },
+  'Admin': { bg: '#FEF3C7', text: '#92400E', dot: '#F59E0B' },
+  'Recruiter': { bg: '#EEF2FF', text: '#4338CA', dot: '#6366F1' },
+  'HR Manager': { bg: '#F0FDF4', text: '#166534', dot: '#22C55E' },
+  'Interviewer': { bg: '#F0FDFA', text: '#0F766E', dot: '#14B8A6' },
+  'Viewer': { bg: '#F1F5F9', text: '#475569', dot: '#94A3B8' },
 }
 
 const STATUS_CFG = {
-  'Active':    { bg: '#F0FDF4', text: '#15803D', dot: '#22C55E' },
-  'Inactive':  { bg: '#F1F5F9', text: '#475569', dot: '#94A3B8' },
+  'Active': { bg: '#F0FDF4', text: '#15803D', dot: '#22C55E' },
+  'Inactive': { bg: '#F1F5F9', text: '#475569', dot: '#94A3B8' },
   'Suspended': { bg: '#FEF2F2', text: '#DC2626', dot: '#EF4444' },
-  'Pending':   { bg: '#FFFBEB', text: '#B45309', dot: '#F59E0B' },
+  'Pending': { bg: '#FFFBEB', text: '#B45309', dot: '#F59E0B' },
 }
 
-const ROLE_OPTIONS     = Object.keys(ROLE_CFG)
-const STATUS_OPTIONS   = Object.keys(STATUS_CFG)
+const ROLE_OPTIONS = Object.keys(ROLE_CFG)
+const STATUS_OPTIONS = Object.keys(STATUS_CFG)
 const LOCATION_OPTIONS = ['Bengaluru', 'Mumbai', 'Hyderabad', 'Delhi', 'Chennai', 'Pune', 'Remote']
 
 const STATUS_API_MAP = { ACTIVE: 'Active', INACTIVE: 'Inactive', PENDING: 'Pending' }
 
 const AVATAR_COLORS = [
-  '#6366F1','#EC4899','#22C55E','#F59E0B','#14B8A6',
-  '#8B5CF6','#F43F5E','#0EA5E9','#10B981','#EF4444',
+  '#6366F1', '#EC4899', '#22C55E', '#F59E0B', '#14B8A6',
+  '#8B5CF6', '#F43F5E', '#0EA5E9', '#10B981', '#EF4444',
 ]
 
 const EMPTY_FORM = {
@@ -40,20 +40,20 @@ const EMPTY_FORM = {
 function mapApiUser(u) {
   const hash = [...(u.email || '')].reduce((a, c) => a + c.charCodeAt(0), 0)
   return {
-    id:             u.keycloakUserId,
+    id: u.keycloakUserId,
     keycloakUserId: u.keycloakUserId,
-    first_name:     u.firstName   || '',
-    last_name:      u.lastName    || '',
-    email:          u.email       || '',
-    phone:          u.phoneNumber || '',
-    department:     u.department  || '',
-    location:       u.location    || '',
-    role:           u.role        || '—',
-    status:         STATUS_API_MAP[u.status] || u.status || 'Inactive',
-    avatarUrl:      u.avatarUrl   || null,
-    avatar_color:   AVATAR_COLORS[hash % AVATAR_COLORS.length],
-    created_on:     u.createdOn   || null,
-    updated_on:     u.updatedOn   || null,
+    first_name: u.firstName || '',
+    last_name: u.lastName || '',
+    email: u.email || '',
+    phone: u.phoneNumber || '',
+    department: u.department || '',
+    location: u.location || '',
+    role: u.role || '—',
+    status: STATUS_API_MAP[u.status] || u.status || 'Inactive',
+    avatarUrl: u.avatarUrl || null,
+    avatar_color: AVATAR_COLORS[hash % AVATAR_COLORS.length],
+    created_on: u.createdOn || null,
+    updated_on: u.updatedOn || null,
   }
 }
 
@@ -62,16 +62,16 @@ function mapApiUser(u) {
 function fmtDate(d) {
   if (!d) return '—'
   const dt = new Date(d)
-  const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  const mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   return `${dt.getDate()} ${mo[dt.getMonth()]} ${dt.getFullYear()}`
 }
 
 function fmtDateTime(d) {
   if (!d) return '—'
   const dt = new Date(d)
-  const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-  const hh = String(dt.getHours()).padStart(2,'0')
-  const mm = String(dt.getMinutes()).padStart(2,'0')
+  const mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const hh = String(dt.getHours()).padStart(2, '0')
+  const mm = String(dt.getMinutes()).padStart(2, '0')
   return `${dt.getDate()} ${mo[dt.getMonth()]} ${dt.getFullYear()}, ${hh}:${mm}`
 }
 
@@ -83,7 +83,7 @@ function getInitials(u) {
 
 function UserAvatar({ user, size = 36 }) {
   const [imgError, setImgError] = useState(false)
-  const avatarSrc = user.keycloakUserId ? `/api/users/${user.keycloakUserId}/avatar` : null
+  const avatarSrc = user.keycloakUserId ? `/api/v1/users/${user.keycloakUserId}/avatar` : null
 
   if (avatarSrc && !imgError) {
     return (
@@ -127,22 +127,22 @@ function StatusBadge({ status }) {
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function UsersPage() {
-  const [users, setUsers]               = useState([])
-  const [loading, setLoading]           = useState(true)
-  const [departments, setDepartments]   = useState([])
-  const [searchQ, setSearchQ]           = useState('')
-  const [filterRole, setFilterRole]     = useState('All')
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [departments, setDepartments] = useState([])
+  const [searchQ, setSearchQ] = useState('')
+  const [filterRole, setFilterRole] = useState('All')
   const [filterStatus, setFilterStatus] = useState('All')
-  const [detailId, setDetailId]         = useState(null)
-  const [userModal, setUserModal]       = useState(false)
-  const [userForm, setUserForm]         = useState(EMPTY_FORM)
-  const [saving, setSaving]             = useState(false)
+  const [detailId, setDetailId] = useState(null)
+  const [userModal, setUserModal] = useState(false)
+  const [userForm, setUserForm] = useState(EMPTY_FORM)
+  const [saving, setSaving] = useState(false)
   const [deleteUserId, setDeleteUserId] = useState(null)
-  const [deleting, setDeleting]         = useState(false)
-  const [sortKey, setSortKey]           = useState('first_name')
-  const [sortDir, setSortDir]           = useState('asc')
-  const [page, setPage]                 = useState(1)
-  const [perPage, setPerPage]           = useState(10)
+  const [deleting, setDeleting] = useState(false)
+  const [sortKey, setSortKey] = useState('first_name')
+  const [sortDir, setSortDir] = useState('asc')
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(10)
 
   const detail = users.find(u => u.id === detailId)
 
@@ -151,12 +151,12 @@ export default function UsersPage() {
     const token = localStorage.getItem('access_token')
     if (!token) return
     try {
-      const res = await fetch('/api/users', { headers: { Authorization: `Bearer ${token}` } })
+      const res = await fetch('/api/v1/users', { headers: { Authorization: `Bearer ${token}` } })
       if (!res.ok) return
       const json = await res.json()
       const list = (json.data || json || []).map(mapApiUser)
       setUsers(list)
-    } catch {}
+    } catch { }
     finally { setLoading(false) }
   }, [])
 
@@ -164,26 +164,26 @@ export default function UsersPage() {
     const token = localStorage.getItem('access_token')
     if (!token) return
     try {
-      const res = await fetch('/api/departments', { headers: { Authorization: `Bearer ${token}` } })
+      const res = await fetch('/api/v1/departments', { headers: { Authorization: `Bearer ${token}` } })
       if (!res.ok) return
       const json = await res.json()
       const list = json.data || json || []
       const names = list.map(d => (typeof d === 'string' ? d : d.name || d.departmentName || d))
       if (names.length > 0) setDepartments(names)
-    } catch {}
+    } catch { }
   }, [])
 
   useEffect(() => { fetchUsers(); fetchDepartments() }, [fetchUsers, fetchDepartments])
 
   // ── Derived ──────────────────────────────────────────────────────────────────
-  const totalActive    = users.filter(u => u.status === 'Active').length
-  const totalInactive  = users.filter(u => u.status === 'Inactive').length
+  const totalActive = users.filter(u => u.status === 'Active').length
+  const totalInactive = users.filter(u => u.status === 'Inactive').length
   const totalSuspended = users.filter(u => u.status === 'Suspended').length
-  const totalPending   = users.filter(u => u.status === 'Pending').length
+  const totalPending = users.filter(u => u.status === 'Pending').length
 
   const filtered = users
     .filter(u => {
-      const okRole   = filterRole   === 'All' || u.role   === filterRole
+      const okRole = filterRole === 'All' || u.role === filterRole
       const okStatus = filterStatus === 'All' || u.status === filterStatus
       const q = searchQ.toLowerCase()
       const okSearch = !q || [u.first_name, u.last_name, u.email, u.role, u.department, u.location]
@@ -199,12 +199,12 @@ export default function UsersPage() {
 
   // ── Pagination ────────────────────────────────────────────────────────────────
   const totalPages = Math.max(1, Math.ceil(filtered.length / perPage))
-  const safePage   = Math.min(page, totalPages)
-  const pageStart  = (safePage - 1) * perPage
-  const paginated  = filtered.slice(pageStart, pageStart + perPage)
+  const safePage = Math.min(page, totalPages)
+  const pageStart = (safePage - 1) * perPage
+  const paginated = filtered.slice(pageStart, pageStart + perPage)
 
   function resetPage() { setPage(1) }
-  function goTo(p)     { setPage(Math.max(1, Math.min(p, totalPages))) }
+  function goTo(p) { setPage(Math.max(1, Math.min(p, totalPages))) }
 
   function pageNumbers() {
     const pages = []
@@ -224,21 +224,29 @@ export default function UsersPage() {
   }
 
   function SortIcon({ col }) {
-    if (sortKey !== col) return <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.3"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg>
+    if (sortKey !== col) return <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.3"><path d="M7 15l5 5 5-5M7 9l5-5 5 5" /></svg>
     return sortDir === 'asc'
-      ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M7 15l5 5 5-5"/></svg>
-      : <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M7 9l5-5 5 5"/></svg>
+      ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M7 15l5 5 5-5" /></svg>
+      : <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M7 9l5-5 5 5" /></svg>
   }
 
   const statCards = [
-    { label: 'Total Users',    value: users.length,     color: '#0EA5E9', bg: '#F0F9FF',
-      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> },
-    { label: 'Active',         value: totalActive,      color: '#15803D', bg: '#F0FDF4',
-      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg> },
-    { label: 'Inactive / Pending', value: totalInactive + totalPending, color: '#B45309', bg: '#FFFBEB',
-      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg> },
-    { label: 'Suspended',      value: totalSuspended,   color: '#DC2626', bg: '#FEF2F2',
-      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 5h2v6h-2V7zm0 8h2v2h-2v-2z"/></svg> },
+    {
+      label: 'Total Users', value: users.length, color: '#0EA5E9', bg: '#F0F9FF',
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" /></svg>
+    },
+    {
+      label: 'Active', value: totalActive, color: '#15803D', bg: '#F0FDF4',
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" /></svg>
+    },
+    {
+      label: 'Inactive / Pending', value: totalInactive + totalPending, color: '#B45309', bg: '#FFFBEB',
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>
+    },
+    {
+      label: 'Suspended', value: totalSuspended, color: '#DC2626', bg: '#FEF2F2',
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 5h2v6h-2V7zm0 8h2v2h-2v-2z" /></svg>
+    },
   ]
 
   // ── CRUD ─────────────────────────────────────────────────────────────────────
@@ -256,13 +264,13 @@ export default function UsersPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          firstName:   userForm.first_name,
-          lastName:    userForm.last_name,
-          email:       userForm.email,
+          firstName: userForm.first_name,
+          lastName: userForm.last_name,
+          email: userForm.email,
           phoneNumber: userForm.phone,
-          location:    userForm.location,
-          department:  userForm.department,
-          role:        userForm.role,
+          location: userForm.location,
+          department: userForm.department,
+          role: userForm.role,
         }),
       })
       if (res.ok) {
@@ -283,7 +291,7 @@ export default function UsersPage() {
     setDeleting(true)
     const token = localStorage.getItem('access_token')
     try {
-      const res = await fetch(`/api/users/${id}`, {
+      const res = await fetch(`/api/v1/users/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -308,7 +316,7 @@ export default function UsersPage() {
     const enable = u.status !== 'Active'
     const token = localStorage.getItem('access_token')
     try {
-      const res = await fetch(`/api/users/${id}/status?enabled=${enable}`, {
+      const res = await fetch(`/api/v1users/${id}/status?enabled=${enable}`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -339,7 +347,7 @@ export default function UsersPage() {
         </div>
         <button className="usr-add-btn" onClick={openAdd}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           Add User
         </button>
@@ -364,14 +372,14 @@ export default function UsersPage() {
           {/* Search */}
           <div className="usr-search-wrap">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <input className="usr-search" placeholder="Search name, email, department…"
               value={searchQ} onChange={e => { setSearchQ(e.target.value); resetPage() }} />
             {searchQ && (
               <button className="usr-search-clear" onClick={() => setSearchQ('')}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             )}
@@ -383,7 +391,7 @@ export default function UsersPage() {
               <button key={r} className={`usr-ftab${filterRole === r ? ' active' : ''}`}
                 onClick={() => { setFilterRole(r); resetPage() }}>
                 {r}
-                {r !== 'All' && <span className="usr-ftab-count">{users.filter(u=>u.role===r).length}</span>}
+                {r !== 'All' && <span className="usr-ftab-count">{users.filter(u => u.role === r).length}</span>}
               </button>
             ))}
           </div>
@@ -436,8 +444,8 @@ export default function UsersPage() {
                 <tr><td colSpan={9} className="usr-empty-row">
                   <div className="usr-empty">
                     <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
-                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
                     <p>No users found</p>
                     <button className="usr-add-btn" onClick={openAdd}>+ Add User</button>
@@ -464,7 +472,7 @@ export default function UsersPage() {
                   <td>
                     <div className="usr-location-cell">
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" opacity=".4">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                       </svg>
                       {u.location}
                     </div>
@@ -478,14 +486,14 @@ export default function UsersPage() {
                         title={u.status === 'Active' ? 'Deactivate' : 'Activate'}
                         onClick={e => toggleStatus(u.id, e)}>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
                         </svg>
                       </button>
                       <button className="usr-icon-btn usr-del-btn" title="Delete" onClick={e => { e.stopPropagation(); setDeleteUserId(u.id) }}>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                          <polyline points="3 6 5 6 21 6"/>
-                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                          <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                          <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
                         </svg>
                       </button>
                     </div>
@@ -515,19 +523,19 @@ export default function UsersPage() {
 
           <div className="usr-pg-right">
             <button className="usr-pg-btn" disabled={safePage === 1} onClick={() => goTo(safePage - 1)}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M15 18l-6-6 6-6" /></svg>
             </button>
             {pageNumbers().map((p, i) =>
               p === '…'
                 ? <span key={`ellipsis-${i}`} className="usr-pg-ellipsis">…</span>
                 : <button key={p}
-                    className={`usr-pg-num${safePage === p ? ' usr-pg-active' : ''}`}
-                    onClick={() => goTo(p)}>
-                    {p}
-                  </button>
+                  className={`usr-pg-num${safePage === p ? ' usr-pg-active' : ''}`}
+                  onClick={() => goTo(p)}>
+                  {p}
+                </button>
             )}
             <button className="usr-pg-btn" disabled={safePage === totalPages} onClick={() => goTo(safePage + 1)}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6" /></svg>
             </button>
           </div>
         </div>
@@ -551,7 +559,7 @@ export default function UsersPage() {
               <div className="usr-drawer-hd-actions">
                 <button className="usr-drawer-close" onClick={() => setDetailId(null)}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                   </svg>
                 </button>
               </div>
@@ -570,11 +578,11 @@ export default function UsersPage() {
                 <div className="usr-dr-section-title">Identity</div>
                 <div className="usr-dr-grid">
                   {[
-                    { label: 'First Name', value: detail.first_name             },
-                    { label: 'Last Name',  value: detail.last_name              },
-                    { label: 'Email',      value: detail.email,    mono: true   },
-                    { label: 'Phone',      value: detail.phone || '—'           },
-                    { label: 'Location',   value: detail.location               },
+                    { label: 'First Name', value: detail.first_name },
+                    { label: 'Last Name', value: detail.last_name },
+                    { label: 'Email', value: detail.email, mono: true },
+                    { label: 'Phone', value: detail.phone || '—' },
+                    { label: 'Location', value: detail.location },
                   ].map(r => (
                     <div key={r.label} className="usr-dr-grid-item">
                       <div className="usr-dr-grid-label">{r.label}</div>
@@ -589,9 +597,9 @@ export default function UsersPage() {
                 <div className="usr-dr-section-title">Access & Role</div>
                 <div className="usr-dr-grid">
                   {[
-                    { label: 'Role',       value: detail.role       },
-                    { label: 'Status',     value: detail.status     },
-                    { label: 'Department', value: detail.department  },
+                    { label: 'Role', value: detail.role },
+                    { label: 'Status', value: detail.status },
+                    { label: 'Department', value: detail.department },
                   ].map(r => (
                     <div key={r.label} className="usr-dr-grid-item">
                       <div className="usr-dr-grid-label">{r.label}</div>
@@ -606,8 +614,8 @@ export default function UsersPage() {
                 <div className="usr-dr-section-title">Timestamps</div>
                 <div className="usr-dr-ts-card">
                   <div className="usr-dr-ts-row">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style={{color:'#94A3B8',flexShrink:0}}>
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#94A3B8', flexShrink: 0 }}>
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                     </svg>
                     <div>
                       <div className="usr-dr-ts-label">Created On</div>
@@ -616,8 +624,8 @@ export default function UsersPage() {
                   </div>
                   <div className="usr-dr-ts-sep" />
                   <div className="usr-dr-ts-row">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style={{color:'#94A3B8',flexShrink:0}}>
-                      <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#94A3B8', flexShrink: 0 }}>
+                      <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
                     </svg>
                     <div>
                       <div className="usr-dr-ts-label">Last Updated</div>
@@ -675,7 +683,7 @@ export default function UsersPage() {
               </div>
               <button className="usr-modal-close" onClick={() => setUserModal(false)}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             </div>
@@ -766,9 +774,9 @@ export default function UsersPage() {
             <div className="usr-confirm-modal">
               <div className="usr-confirm-icon">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round">
-                  <polyline points="3 6 5 6 21 6"/>
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                  <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
                 </svg>
               </div>
               <div className="usr-confirm-title">Delete User?</div>
