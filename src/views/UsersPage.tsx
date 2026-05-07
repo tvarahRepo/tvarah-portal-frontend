@@ -252,7 +252,7 @@ export default function UsersPage() {
     setSaving(true)
     const token = localStorage.getItem('access_token')
     try {
-      const res = await fetch('/api/auth/add-user', {
+      const res = await fetch('/backend/auth/add-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({

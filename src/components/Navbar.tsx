@@ -219,7 +219,7 @@ function ProfileMenu() {
     const accessToken = localStorage.getItem('access_token')
     try {
       if (refreshToken) {
-        await fetch('/api/auth/logout', {
+        await fetch('/backend/auth/logout', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
