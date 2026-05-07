@@ -1,15 +1,17 @@
 /** @type {import('next').NextConfig} */
+const BACKEND = process.env.BACKEND_URL || 'https://portal.tvarah.com/api/v1'
+
 const nextConfig = {
   output: 'standalone',
   async rewrites() {
     return [
       {
         source: '/backend/:path*',
-        destination: 'https://portal.tvarah.com/api/v1/:path*',
+        destination: `${BACKEND}/:path*`,
       },
       {
         source: '/api/:path*',
-        destination: 'https://portal.tvarah.com/api/v1/:path*',
+        destination: `${BACKEND}/:path*`,
       },
     ]
   },
