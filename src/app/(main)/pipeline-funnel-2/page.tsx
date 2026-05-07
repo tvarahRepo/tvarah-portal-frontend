@@ -1,4 +1,4 @@
-import PipelineFunnel2 from '../../../pages/PipelineFunnel2'
+import PipelineFunnel2 from '../../../views/PipelineFunnel2'
 
 export const metadata = { title: 'Funnel View 2 — Tvarah' }
 

@@ -1,4 +1,4 @@
-import PipelineDemo from '../../../pages/PipelineDemo'
+import PipelineDemo from '../../../views/PipelineDemo'
 
 export const metadata = { title: 'Pipeline Demo — Tvarah' }
 

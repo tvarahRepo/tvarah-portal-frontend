@@ -1,4 +1,4 @@
-import TaskPage from '../../../pages/TaskPage'
+import TaskPage from '../../../views/TaskPage'
 
 export const metadata = { title: 'Tasks — Tvarah' }
 

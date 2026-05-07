@@ -1,4 +1,4 @@
-import PanelPage from '../../../pages/PanelPage'
+import PanelPage from '../../../views/PanelPage'
 
 export const metadata = { title: 'Panel — Tvarah' }
 

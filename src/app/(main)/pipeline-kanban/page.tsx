@@ -1,4 +1,4 @@
-import PipelineKanban from '../../../pages/PipelineKanban'
+import PipelineKanban from '../../../views/PipelineKanban'
 
 export const metadata = { title: 'Kanban Board — Tvarah' }
 
