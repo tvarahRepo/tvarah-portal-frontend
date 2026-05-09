@@ -366,6 +366,8 @@ function ActionsBadge({ count, type }) {
 
 export default function Dashboard() {
   const [activeNav, setActiveNav] = useState('Dashboard')
+  const [selectedClientName, setSelectedClientName] = useState(null)
+  const [clientsResetKey, setClientsResetKey] = useState(0)
   const [starred, setStarred] = useState({})
   const [collapsed, setCollapsed] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
@@ -425,6 +427,8 @@ export default function Dashboard() {
 
   function handleNavClick(item) {
     setActiveNav(item)
+    setSelectedClientName(null)
+    setClientsResetKey(k => k + 1)
   }
 
   function NavItem({ id, label, iconBg, iconBgDark, iconColor, icon, isActive, onClick, beta, isAvatar, isSubItem }) {
@@ -595,9 +599,17 @@ export default function Dashboard() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
             {(activeNav && activeNav !== 'Dashboard') ? (
               <>
-                <span className="db-bc-seg">Dashboard</span>
+                <span className="db-bc-seg" style={{cursor:'pointer'}} onClick={() => { setActiveNav('Dashboard'); setSelectedClientName(null); setClientsResetKey(k => k + 1) }}>Dashboard</span>
                 <span className="db-bc-div">/</span>
-                <span className="db-bc-cur">{activeNav}</span>
+                {selectedClientName ? (
+                  <>
+                    <span className="db-bc-seg" style={{cursor:'pointer'}} onClick={() => { setSelectedClientName(null); setClientsResetKey(k => k + 1) }}>{activeNav}</span>
+                    <span className="db-bc-div">/</span>
+                    <span className="db-bc-cur">{selectedClientName}</span>
+                  </>
+                ) : (
+                  <span className="db-bc-cur">{activeNav}</span>
+                )}
               </>
             ) : (
               <span className="db-bc-cur">Dashboard</span>
@@ -641,7 +653,7 @@ export default function Dashboard() {
           )}
 
           {activeNav === 'Clients' && (
-            <div className="db-component-wrap"><ClientsPage /></div>
+            <div className="db-component-wrap"><ClientsPage onClientSelect={setSelectedClientName} resetKey={clientsResetKey} /></div>
           )}
 
           {activeNav === 'Users' && (

@@ -342,8 +342,12 @@ export default function UsersPage() {
       {/* ── Page Header ── */}
       <div className="usr-page-header">
         <div className="usr-page-header-left">
-          <div className="usr-page-header-title">Users</div>
-          <span className="usr-page-header-sub">{totalActive} active · {users.length} total</span>
+          <div>
+            <div className="usr-page-header-title">Users</div>
+            <p className="usr-page-header-meta">
+              {users.length} total · <span className="usr-page-header-meta-pending">{totalPending} pending</span>
+            </p>
+          </div>
         </div>
         <button className="usr-add-btn" onClick={openAdd}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">

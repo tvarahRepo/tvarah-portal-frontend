@@ -399,10 +399,12 @@ export default function JobsPage() {
       {/* ── Page Header ── */}
       <div className="jb-page-header">
         <div className="jb-page-header-left">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style={{color:'#3B82F6'}}>
-            <path d="M6 6V5a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v1h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2zm2 0h8V5a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v1z"/>
-          </svg>
-          <div className="jb-page-header-title">Positions</div>
+          <div>
+            <div className="jb-page-header-title">Jobs</div>
+            <p className="jb-page-header-meta">
+              {jobs.length} total · <span className="jb-page-header-meta-pending">{jobs.filter(j => j.priority === 'Urgent').length} urgent</span>
+            </p>
+          </div>
         </div>
 
         <button className="jb-add-btn" onClick={openAdd}>

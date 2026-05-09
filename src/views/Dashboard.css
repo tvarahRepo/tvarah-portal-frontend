@@ -577,7 +577,9 @@
 .db-breadcrumb {
   display: flex; align-items: center; gap: 8px; font-size: 13px;
 }
-.db-bc-seg { color: #9CA3AF; }
+.db-bc-seg { color: #9CA3AF; transition: color 0.15s; }
+.db-bc-seg[style*="cursor"] { }
+.db-bc-seg[style*="cursor"]:hover { color: #4F46E5; }
 .db-bc-div { color: #D1D8E4; font-size: 16px; }
 .db-bc-cur { color: #111827; font-weight: 700; }
 .db-topbar-right { display: flex; align-items: center; gap: 8px; }
@@ -776,6 +778,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;
+  position: relative;
 }
 
 /* ════════════════════════════════════

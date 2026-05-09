@@ -12,15 +12,13 @@
 
 /* ── Page Header ── */
 .usr-page-header {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: flex-start; justify-content: space-between;
   margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
 }
-.usr-page-header-left { display: flex; align-items: center; gap: 12px; }
-.usr-page-header-title { font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.4px; }
-.usr-page-header-sub {
-  font-size: 13px; color: #94A3B8;
-  background: #F1F5F9; padding: 3px 10px; border-radius: 20px;
-}
+.usr-page-header-left { display: flex; align-items: flex-start; gap: 12px; }
+.usr-page-header-title { font-size: 23px; font-weight: 800; color: #0F172A; letter-spacing: -0.4px; margin: 0 0 4px; }
+.usr-page-header-meta { font-size: 13px; color: #94A3B8; margin: 0; }
+.usr-page-header-meta-pending { color: #F59E0B; font-weight: 600; }
 .usr-add-btn {
   display: flex; align-items: center; gap: 7px;
   padding: 8px 16px; border-radius: 9px; border: none;
