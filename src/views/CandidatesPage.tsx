@@ -141,9 +141,9 @@ function WorkPrefBadge({ pref }) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
-export default function CandidatesPage() {
+export default function CandidatesPage({ jobFilter = null }: { jobFilter?: { designation: string, skills: string[], experience: string } | null }) {
   const [candidates, setCandidates] = useState(SEED_CANDIDATES)
-  const [searchQ, setSearchQ]       = useState('')
+  const [searchQ, setSearchQ]       = useState(jobFilter?.skills?.[0] || '')
   const [filterPipeline, setFilterPipeline] = useState('All')
   const [filterWork, setFilterWork] = useState('All')
   const [detailId, setDetailId]     = useState(null)
@@ -322,6 +322,19 @@ export default function CandidatesPage() {
           <span className="cnd-count-label">{filtered.length} candidate{filtered.length!==1?'s':''}</span>
         </div>
       </div>
+
+      {/* ── Job filter banner ── */}
+      {jobFilter && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          margin: '0 0 10px', padding: '9px 16px',
+          background: '#EEF2FF', border: '1px solid #C7D2FE', borderRadius: 10,
+          fontSize: 12.5, color: '#4338CA', fontWeight: 500,
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4338CA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Finding candidates for <strong>{jobFilter.designation}</strong> · Experience: {jobFilter.experience} · Skills: {jobFilter.skills.slice(0, 3).join(', ')}</span>
+        </div>
+      )}
 
       {/* ── Table ── */}
       <div className="cnd-table-wrap">
