@@ -366,6 +366,11 @@ function ActionsBadge({ count, type }) {
 
 export default function Dashboard() {
   const [activeNav, setActiveNav] = useState('Dashboard')
+  const [selectedClientName, setSelectedClientName] = useState(null)
+  const [clientsResetKey, setClientsResetKey] = useState(0)
+  const [jobsReviewMode, setJobsReviewMode] = useState(false)
+  const [jobsViewJobName, setJobsViewJobName] = useState<string | null>(null)
+  const [candidatesJobFilter, setCandidatesJobFilter] = useState<any>(null)
   const [starred, setStarred] = useState({})
   const [collapsed, setCollapsed] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
@@ -425,6 +430,10 @@ export default function Dashboard() {
 
   function handleNavClick(item) {
     setActiveNav(item)
+    setSelectedClientName(null)
+    setClientsResetKey(k => k + 1)
+    setJobsReviewMode(false)
+    setJobsViewJobName(null)
   }
 
   function NavItem({ id, label, iconBg, iconBgDark, iconColor, icon, isActive, onClick, beta, isAvatar, isSubItem }) {
@@ -595,9 +604,29 @@ export default function Dashboard() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
             {(activeNav && activeNav !== 'Dashboard') ? (
               <>
-                <span className="db-bc-seg">Dashboard</span>
+                <span className="db-bc-seg" style={{cursor:'pointer'}} onClick={() => { setActiveNav('Dashboard'); setSelectedClientName(null); setClientsResetKey(k => k + 1); setJobsReviewMode(false); setJobsViewJobName(null) }}>Dashboard</span>
                 <span className="db-bc-div">/</span>
-                <span className="db-bc-cur">{activeNav}</span>
+                {selectedClientName ? (
+                  <>
+                    <span className="db-bc-seg" style={{cursor:'pointer'}} onClick={() => { setSelectedClientName(null); setClientsResetKey(k => k + 1) }}>{activeNav}</span>
+                    <span className="db-bc-div">/</span>
+                    <span className="db-bc-cur">{selectedClientName}</span>
+                  </>
+                ) : jobsReviewMode ? (
+                  <>
+                    <span className="db-bc-seg" style={{cursor:'pointer'}} onClick={() => setJobsReviewMode(false)}>{activeNav}</span>
+                    <span className="db-bc-div">/</span>
+                    <span className="db-bc-cur">Review JD</span>
+                  </>
+                ) : jobsViewJobName ? (
+                  <>
+                    <span className="db-bc-seg" style={{cursor:'pointer'}} onClick={() => { setJobsViewJobName(null); setJobsReviewMode(false) }}>{activeNav}</span>
+                    <span className="db-bc-div">/</span>
+                    <span className="db-bc-cur">{jobsViewJobName}</span>
+                  </>
+                ) : (
+                  <span className="db-bc-cur">{activeNav}</span>
+                )}
               </>
             ) : (
               <span className="db-bc-cur">Dashboard</span>
@@ -641,7 +670,7 @@ export default function Dashboard() {
           )}
 
           {activeNav === 'Clients' && (
-            <div className="db-component-wrap"><ClientsPage /></div>
+            <div className="db-component-wrap"><ClientsPage onClientSelect={setSelectedClientName} resetKey={clientsResetKey} /></div>
           )}
 
           {activeNav === 'Users' && (
@@ -649,11 +678,21 @@ export default function Dashboard() {
           )}
 
           {activeNav === 'Jobs' && (
-            <div className="db-component-wrap"><JobsPage /></div>
+            <div className="db-component-wrap"><JobsPage
+  onReviewModeChange={setJobsReviewMode}
+  reviewMode={jobsReviewMode || !!jobsViewJobName}
+  onJobViewChange={name => setJobsViewJobName(name)}
+  onFindCandidates={filter => {
+    setCandidatesJobFilter(filter)
+    setJobsViewJobName(null)
+    setJobsReviewMode(false)
+    setActiveNav('Candidates')
+  }}
+/></div>
           )}
 
           {activeNav === 'Candidates' && (
-            <div className="db-component-wrap"><CandidatesPage /></div>
+            <div className="db-component-wrap"><CandidatesPage jobFilter={candidatesJobFilter} /></div>
           )}
 
           {activeNav !== 'Dashboard' && activeNav !== 'Panel' && activeNav !== 'Tasks' && activeNav !== 'Clients' && activeNav !== 'Users' && activeNav !== 'Jobs' && activeNav !== 'Candidates' && (

@@ -3,6 +3,9 @@ const BACKEND = process.env.BACKEND_URL || 'https://portal.tvarah.com/api/v1'
 
 const nextConfig = {
   output: 'standalone',
+  turbopack: {
+    root: import.meta.dirname,
+  },
   async rewrites() {
     return [
       {

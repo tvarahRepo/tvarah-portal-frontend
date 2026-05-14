@@ -15,7 +15,7 @@
 /* ── Page Header ── */
 .pnl-page-hd {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 22px;
   gap: 12px;
@@ -23,32 +23,24 @@
 }
 .pnl-page-hd-left {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
 }
-.pnl-page-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%);
-  color: #F43F5E;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 1px 4px rgba(244, 63, 94, 0.15);
-}
 .pnl-page-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1E293B;
-  margin: 0 0 2px;
-  letter-spacing: -0.3px;
+  font-size: 23px;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 4px;
+  letter-spacing: -0.4px;
 }
 .pnl-page-sub {
   font-size: 13px;
-  color: #64748B;
+  color: #94A3B8;
   margin: 0;
+}
+.pnl-page-sub-pending {
+  color: #F59E0B;
+  font-weight: 600;
 }
 .pnl-page-hd-right {
   display: flex;
