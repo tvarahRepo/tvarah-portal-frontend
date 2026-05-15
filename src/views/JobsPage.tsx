@@ -1,6 +1,7 @@
 // @ts-nocheck
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
+import { apiFetch } from '@/lib/apiFetch'
 import './JobsPage.css'
 import ReviewJDPage from './ReviewJDPage'
 import ViewJobPage from './ViewJobPage'
@@ -384,10 +385,8 @@ export default function JobsPage({ onReviewModeChange = null, reviewMode = false
   }, [reviewMode])
 
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
-    fetch('/api/v1/users/me', {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    })
+    if (typeof window === 'undefined') return
+    apiFetch('/api/v1/users/me')
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data?.role) setUserRole(data.role) })
       .catch(() => {})

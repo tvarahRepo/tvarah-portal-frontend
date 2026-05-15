@@ -1,6 +1,7 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import type { CurrentUser } from '../hooks/useCurrentUser'
+import { apiFetch } from '@/lib/apiFetch'
 
 interface Props {
   user: CurrentUser
@@ -15,7 +16,10 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
   const [department, setDepartment] = useState(user.department ?? '')
   const [location, setLocation] = useState(user.location ?? '')
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatarUrl ?? null)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    user.keycloakUserId ? `/api/v1/users/${user.keycloakUserId}/avatar` : null
+  )
+  const [avatarImgErr, setAvatarImgErr] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [departments, setDepartments] = useState<string[]>([])
@@ -28,9 +32,8 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
   }, [onClose])
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token')
-    if (!token) return
-    fetch('/api/v1/departments', { headers: { Authorization: `Bearer ${token}` } })
+    if (!localStorage.getItem('access_token')) return
+    apiFetch('/api/v1/departments')
       .then(r => r.ok ? r.json() : null)
       .then(json => {
         if (!json) return
@@ -45,6 +48,7 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
     const file = e.target.files?.[0]
     if (!file) return
     setAvatarFile(file)
+    setAvatarImgErr(false)
     setAvatarPreview(URL.createObjectURL(file))
   }
 
@@ -53,7 +57,6 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
     setError('')
     setSaving(true)
     try {
-      const token = localStorage.getItem('access_token')
       const formData = new FormData()
       formData.append(
         'data',
@@ -63,9 +66,8 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
       )
       if (avatarFile) formData.append('avatar', avatarFile)
 
-      const res = await fetch('/api/v1/users/me', {
+      const res = await apiFetch('/api/v1/users/me', {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       })
       const json = await res.json()
@@ -98,8 +100,8 @@ export default function EditProfileModal({ user, onClose, onSaved }: Props) {
           {/* Avatar */}
           <div className="epm-avatar-section">
             <div className="epm-avatar-wrap" onClick={() => fileInputRef.current?.click()}>
-              {avatarPreview
-                ? <img src={avatarPreview} alt="Avatar" className="epm-avatar-img" />
+              {avatarPreview && !avatarImgErr
+                ? <img src={avatarPreview} alt="Avatar" className="epm-avatar-img" onError={() => setAvatarImgErr(true)} />
                 : <span className="epm-avatar-initials">{`${firstName[0] ?? ''}${lastName[0] ?? ''}`.toUpperCase() || '?'}</span>
               }
               <div className="epm-avatar-overlay">

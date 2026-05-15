@@ -1,6 +1,7 @@
 // @ts-nocheck
 'use client'
 import { useState, useEffect, useCallback } from 'react'
+import { apiFetch } from '@/lib/apiFetch'
 import './UsersPage.css'
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -24,7 +25,7 @@ const ROLE_OPTIONS = Object.keys(ROLE_CFG)
 const STATUS_OPTIONS = Object.keys(STATUS_CFG)
 const LOCATION_OPTIONS = ['Bengaluru', 'Mumbai', 'Hyderabad', 'Delhi', 'Chennai', 'Pune', 'Remote']
 
-const STATUS_API_MAP = { ACTIVE: 'Active', INACTIVE: 'Inactive', PENDING: 'Pending' }
+const STATUS_API_MAP = { ACTIVE: 'Active', INACTIVE: 'Inactive', PENDING: 'Pending', SUSPENDED: 'Suspended' }
 
 const AVATAR_COLORS = [
   '#6366F1', '#EC4899', '#22C55E', '#F59E0B', '#14B8A6',
@@ -139,6 +140,8 @@ export default function UsersPage() {
   const [saving, setSaving] = useState(false)
   const [deleteUserId, setDeleteUserId] = useState(null)
   const [deleting, setDeleting] = useState(false)
+  const [togglingId, setTogglingId] = useState(null)
+  const [toggleConfirmId, setToggleConfirmId] = useState(null)
   const [sortKey, setSortKey] = useState('first_name')
   const [sortDir, setSortDir] = useState('asc')
   const [page, setPage] = useState(1)
@@ -148,10 +151,8 @@ export default function UsersPage() {
 
   // ── Data fetching ──────────────────────────────────────────────────────────
   const fetchUsers = useCallback(async () => {
-    const token = localStorage.getItem('access_token')
-    if (!token) return
     try {
-      const res = await fetch('/api/v1/users', { headers: { Authorization: `Bearer ${token}` } })
+      const res = await apiFetch('/api/v1/users')
       if (!res.ok) return
       const json = await res.json()
       const list = (json.data || json || []).map(mapApiUser)
@@ -161,10 +162,8 @@ export default function UsersPage() {
   }, [])
 
   const fetchDepartments = useCallback(async () => {
-    const token = localStorage.getItem('access_token')
-    if (!token) return
     try {
-      const res = await fetch('/api/v1/departments', { headers: { Authorization: `Bearer ${token}` } })
+      const res = await apiFetch('/api/v1/departments')
       if (!res.ok) return
       const json = await res.json()
       const list = json.data || json || []
@@ -258,11 +257,10 @@ export default function UsersPage() {
   async function saveUser() {
     if (!userForm.first_name.trim() || !userForm.email.trim()) return
     setSaving(true)
-    const token = localStorage.getItem('access_token')
     try {
-      const res = await fetch('/backend/auth/add-user', {
+      const res = await apiFetch('/backend/auth/add-user', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           firstName: userForm.first_name,
           lastName: userForm.last_name,
@@ -289,48 +287,40 @@ export default function UsersPage() {
 
   async function deleteUser(id) {
     setDeleting(true)
-    const token = localStorage.getItem('access_token')
     try {
-      const res = await fetch(`/api/v1/users/${id}`, {
+      const res = await apiFetch(`/api/v1/users/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
       })
       if (res.ok) {
         setDeleteUserId(null)
         if (detailId === id) setDetailId(null)
         await fetchUsers()
-      } else {
-        alert('Failed to delete user.')
       }
-    } catch {
-      alert('Network error. Please try again.')
-    } finally {
+    } catch { }
+    finally {
       setDeleting(false)
     }
   }
 
-  async function toggleStatus(id, e) {
-    e?.stopPropagation()
+  async function toggleStatus(id) {
+    if (togglingId) return
     const u = users.find(x => x.id === id)
     if (!u) return
     const enable = u.status !== 'Active'
-    const token = localStorage.getItem('access_token')
+    setTogglingId(id)
     try {
-      const res = await fetch(`/api/v1users/${id}/status?enabled=${enable}`, {
+      const res = await apiFetch(`/api/v1/users/${id}/status?enabled=${enable}`, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${token}` },
       })
       if (res.ok) {
         setUsers(us => us.map(x => x.id === id
           ? { ...x, status: enable ? 'Active' : 'Inactive' }
           : x
         ))
-      } else {
-        alert('Failed to update status.')
+        setToggleConfirmId(null)
       }
-    } catch {
-      alert('Network error. Please try again.')
-    }
+    } catch { }
+    finally { setTogglingId(null) }
   }
 
   function setF(field) { return e => setUserForm(f => ({ ...f, [field]: e.target.value })) }
@@ -488,7 +478,7 @@ export default function UsersPage() {
                       <button
                         className={`usr-icon-btn usr-toggle-btn${u.status === 'Active' ? ' usr-toggle-active' : ''}`}
                         title={u.status === 'Active' ? 'Deactivate' : 'Activate'}
-                        onClick={e => toggleStatus(u.id, e)}>
+                        onClick={e => { e.stopPropagation(); setToggleConfirmId(u.id) }}>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
                         </svg>
@@ -655,7 +645,7 @@ export default function UsersPage() {
                   </div>
                   <button
                     className={`usr-danger-toggle${detail.status === 'Active' ? ' deactivate' : ' activate'}`}
-                    onClick={e => toggleStatus(detail.id, e)}>
+                    onClick={() => setToggleConfirmId(detail.id)}>
                     {detail.status === 'Active' ? 'Deactivate' : 'Activate'}
                   </button>
                 </div>
@@ -768,6 +758,42 @@ export default function UsersPage() {
           </div>
         </>
       )}
+
+      {/* ── Toggle Status Confirm ── */}
+      {toggleConfirmId && (() => {
+        const u = users.find(x => x.id === toggleConfirmId)
+        if (!u) return null
+        const isDeactivate = u.status === 'Active'
+        return (
+          <>
+            <div className="usr-overlay usr-overlay-dark" onClick={() => { if (!togglingId) setToggleConfirmId(null) }} />
+            <div className="usr-confirm-modal">
+              <div className={`usr-confirm-icon${isDeactivate ? '' : ' usr-confirm-icon-green'}`}>
+                {isDeactivate
+                  ? <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><line x1="8" y1="12" x2="16" y2="12" /></svg>
+                  : <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><polyline points="8 12 11 15 16 9" /></svg>
+                }
+              </div>
+              <div className="usr-confirm-title">{isDeactivate ? 'Deactivate User?' : 'Activate User?'}</div>
+              <div className="usr-confirm-sub">
+                {isDeactivate
+                  ? <><strong>{u.first_name} {u.last_name}</strong> will lose access immediately.</>
+                  : <>Restore access for <strong>{u.first_name} {u.last_name}</strong>.</>
+                }
+              </div>
+              <div className="usr-confirm-actions">
+                <button className="usr-confirm-cancel" onClick={() => setToggleConfirmId(null)} disabled={!!togglingId}>Cancel</button>
+                <button
+                  className={isDeactivate ? 'usr-confirm-delete' : 'usr-confirm-activate'}
+                  onClick={() => toggleStatus(toggleConfirmId)}
+                  disabled={!!togglingId}>
+                  {togglingId ? '…' : isDeactivate ? 'Yes, Deactivate' : 'Yes, Activate'}
+                </button>
+              </div>
+            </div>
+          </>
+        )
+      })()}
 
       {/* ── Delete Confirm ── */}
       {deleteUserId && (() => {

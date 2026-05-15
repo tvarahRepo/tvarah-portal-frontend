@@ -167,8 +167,8 @@
 }
 .usr-edit-btn:hover          { border-color: #3B82F6; color: #3B82F6; background: #EFF6FF; }
 .usr-toggle-btn:hover        { border-color: #22C55E; color: #22C55E; background: #F0FDF4; }
-.usr-toggle-btn.usr-toggle-active { border-color: #86EFAC; color: #15803D; background: #F0FDF4; }
-.usr-toggle-btn.usr-toggle-active:hover { border-color: #F59E0B; color: #B45309; background: #FFFBEB; }
+.usr-toggle-btn.usr-toggle-active       { border-color: #FCA5A5; color: #DC2626; background: #FEF2F2; }
+.usr-toggle-btn.usr-toggle-active:hover { border-color: #EF4444; color: #B91C1C; background: #FEE2E2; }
 .usr-del-btn:hover           { border-color: #EF4444; color: #EF4444; background: #FEF2F2; }
 
 /* Empty */
@@ -375,6 +375,13 @@
   background: #EF4444; color: #fff; font-size: 13.5px; font-weight: 600; cursor: pointer;
 }
 .usr-confirm-delete:hover { background: #DC2626; }
+.usr-confirm-icon-green { background: #F0FDF4; }
+.usr-confirm-activate {
+  flex: 1; height: 40px; border-radius: 9px; border: none;
+  background: #16A34A; color: #fff; font-size: 13.5px; font-weight: 600; cursor: pointer;
+}
+.usr-confirm-activate:hover { background: #15803D; }
+.usr-confirm-activate:disabled, .usr-confirm-delete:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ── Pagination ── */
 .usr-pagination {

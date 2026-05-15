@@ -214,3 +214,16 @@
 .epm-btn-save:hover { opacity: 0.9; }
 .epm-btn-save:active { transform: scale(0.98); }
 .epm-btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── ChangePasswordModal success state ── */
+.cpw-success {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; padding: 36px 28px 28px; text-align: center;
+}
+.cpw-success-icon {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: rgba(22, 163, 74, 0.12); border: 1.5px solid rgba(22, 163, 74, 0.3);
+  display: flex; align-items: center; justify-content: center;
+}
+.cpw-success-title { font-size: 17px; font-weight: 700; color: #F1F5F9; font-family: 'Plus Jakarta Sans', sans-serif; }
+.cpw-success-sub   { font-size: 13px; color: #7C90B0; font-family: 'Inter', sans-serif; }

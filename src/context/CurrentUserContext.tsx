@@ -1,5 +1,6 @@
 'use client'
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { apiFetch } from '@/lib/apiFetch'
 
 export interface CurrentUser {
   id: string
@@ -27,16 +28,21 @@ interface ContextValue {
 const CurrentUserContext = createContext<ContextValue | null>(null)
 
 export function CurrentUserProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<CurrentUser | null>(null)
+  const [user, setUserState] = useState<CurrentUser | null>(null)
+  const [avatarTs, setAvatarTs] = useState(() => Date.now())
+
+  const setUser = useCallback((u: CurrentUser | null) => {
+    setUserState(u)
+    if (u) setAvatarTs(Date.now())
+  }, [])
 
   const refresh = useCallback(() => {
-    const token = localStorage.getItem('access_token')
-    if (!token) return
-    fetch('/api/v1/users/me', { headers: { Authorization: `Bearer ${token}` } })
+    if (!localStorage.getItem('access_token')) return
+    apiFetch('/api/v1/users/me')
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data?.data) setUser(data.data) })
       .catch(() => { })
-  }, [])
+  }, [setUser])
 
   useEffect(() => { refresh() }, [refresh])
 
@@ -45,7 +51,7 @@ export function CurrentUserProvider({ children }: { children: React.ReactNode })
     : '??'
   const fullName = user ? `${user.firstName} ${user.lastName}` : '—'
   const avatarSrc = user?.keycloakUserId
-    ? `/api/v1/users/${user.keycloakUserId}/avatar`
+    ? `/api/v1/users/${user.keycloakUserId}/avatar?v=${avatarTs}`
     : null
 
   return (

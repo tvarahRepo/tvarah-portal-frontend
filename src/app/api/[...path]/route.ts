@@ -6,7 +6,7 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ path: s
   const { path } = await params
   // Strip leading 'v1' segment if present — BACKEND URL already includes /api/v1
   const segments = path[0] === 'v1' ? path.slice(1) : path
-  const url = `${BACKEND}/${segments.join('/')}`
+  const url = `${BACKEND}/${segments.join('/')}${req.nextUrl.search}`
 
   const headers = new Headers()
   const ct = req.headers.get('Content-Type')
