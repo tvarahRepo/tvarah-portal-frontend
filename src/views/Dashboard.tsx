@@ -385,8 +385,13 @@ export default function Dashboard() {
   const router = useRouter()
   const { user, initials, fullName, avatarSrc, setUser } = useCurrentUser()
   const [avatarImgErr, setAvatarImgErr] = useState(false)
+  const isAdmin = user?.role === 'Admin'
 
   useEffect(() => { setAvatarImgErr(false) }, [avatarSrc])
+
+  useEffect(() => {
+    if (activeNav === 'Users' && user && !isAdmin) setActiveNav('Dashboard')
+  }, [activeNav, user, isAdmin])
 
   const handleSignOut = useCallback(async () => {
     setSigningOut(true)
@@ -564,7 +569,7 @@ export default function Dashboard() {
         <nav className="db-nav">
           {!collapsed && <div className="db-section-hd">Overview</div>}
           {collapsed && <div className="db-section-sep" />}
-          {OVERVIEW_NAV.map(item => (
+          {OVERVIEW_NAV.filter(item => item.id !== 'Users' || isAdmin).map(item => (
             <NavItem key={item.id} {...item} label={item.id} isActive={activeNav === item.id} onClick={() => handleNavClick(item.id)} />
           ))}
 
@@ -675,7 +680,7 @@ export default function Dashboard() {
             <div className="db-component-wrap"><ClientsPage onClientSelect={setSelectedClientName} resetKey={clientsResetKey} /></div>
           )}
 
-          {activeNav === 'Users' && (
+          {activeNav === 'Users' && isAdmin && (
             <div className="db-component-wrap"><UsersPage /></div>
           )}
 

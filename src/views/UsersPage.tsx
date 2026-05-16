@@ -136,6 +136,7 @@ export default function UsersPage() {
   const [filterStatus, setFilterStatus] = useState('All')
   const [detailId, setDetailId] = useState(null)
   const [userModal, setUserModal] = useState(false)
+  const [editUserId, setEditUserId] = useState(null)
   const [userForm, setUserForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [deleteUserId, setDeleteUserId] = useState(null)
@@ -239,44 +240,77 @@ export default function UsersPage() {
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" /></svg>
     },
     {
-      label: 'Inactive / Pending', value: totalInactive + totalPending, color: '#B45309', bg: '#FFFBEB',
+      label: 'Inactive', value: totalInactive, color: '#B45309', bg: '#FFFBEB',
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>
     },
     {
-      label: 'Suspended', value: totalSuspended, color: '#DC2626', bg: '#FEF2F2',
-      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 5h2v6h-2V7zm0 8h2v2h-2v-2z" /></svg>
+      label: 'Pending', value: totalPending, color: '#7C3AED', bg: '#F5F3FF',
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 11H11V7h2v4h3v2h-3zm0 4h-2v-2h2v2z" /></svg>
     },
   ]
 
   // ── CRUD ─────────────────────────────────────────────────────────────────────
   function openAdd() {
+    setEditUserId(null)
     setUserForm({ ...EMPTY_FORM, department: departments[0] || '' })
     setUserModal(true)
   }
 
+  function openEdit(user) {
+    setEditUserId(user.id)
+    setUserForm({
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      role: user.role,
+      department: user.department,
+      location: user.location,
+      phone: user.phone,
+      avatar_color: user.avatar_color,
+    })
+    setUserModal(true)
+  }
+
   async function saveUser() {
-    if (!userForm.first_name.trim() || !userForm.email.trim()) return
+    if (!userForm.first_name.trim()) return
     setSaving(true)
     try {
-      const res = await apiFetch('/backend/auth/add-user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: userForm.first_name,
-          lastName: userForm.last_name,
-          email: userForm.email,
-          phoneNumber: userForm.phone,
-          location: userForm.location,
-          department: userForm.department,
-          role: userForm.role,
-        }),
-      })
+      let res
+      if (editUserId) {
+        res = await apiFetch(`/api/v1/users/${editUserId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: userForm.first_name,
+            lastName: userForm.last_name,
+            phoneNumber: userForm.phone,
+            location: userForm.location,
+            department: userForm.department,
+            role: userForm.role,
+          }),
+        })
+      } else {
+        if (!userForm.email.trim()) { setSaving(false); return }
+        res = await apiFetch('/backend/auth/add-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: userForm.first_name,
+            lastName: userForm.last_name,
+            email: userForm.email,
+            phoneNumber: userForm.phone,
+            location: userForm.location,
+            department: userForm.department,
+            role: userForm.role,
+          }),
+        })
+      }
       if (res.ok) {
         await fetchUsers()
         setUserModal(false)
       } else {
         const err = await res.json().catch(() => ({}))
-        alert(err.message || 'Failed to add user.')
+        alert(err.message || (editUserId ? 'Failed to update user.' : 'Failed to add user.'))
       }
     } catch {
       alert('Network error. Please try again.')
@@ -475,6 +509,12 @@ export default function UsersPage() {
                   <td><span className="usr-date">{fmtDate(u.created_on)}</span></td>
                   <td onClick={e => e.stopPropagation()}>
                     <div className="usr-row-actions">
+                      <button className="usr-icon-btn usr-edit-btn" title="Edit" onClick={e => { e.stopPropagation(); openEdit(u) }}>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                      </button>
                       <button
                         className={`usr-icon-btn usr-toggle-btn${u.status === 'Active' ? ' usr-toggle-active' : ''}`}
                         title={u.status === 'Active' ? 'Deactivate' : 'Activate'}
@@ -551,6 +591,13 @@ export default function UsersPage() {
                 </div>
               </div>
               <div className="usr-drawer-hd-actions">
+                <button className="usr-drawer-edit-btn" title="Edit user" onClick={() => { setDetailId(null); openEdit(detail) }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                  Edit
+                </button>
                 <button className="usr-drawer-close" onClick={() => setDetailId(null)}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                     <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -672,8 +719,8 @@ export default function UsersPage() {
           <div className="usr-modal">
             <div className="usr-modal-hd">
               <div>
-                <div className="usr-modal-title">Add New User</div>
-                <div className="usr-modal-sub">Create a new user account on the platform.</div>
+                <div className="usr-modal-title">{editUserId ? 'Edit User' : 'Add New User'}</div>
+                <div className="usr-modal-sub">{editUserId ? 'Update user profile and role.' : 'Create a new user account on the platform.'}</div>
               </div>
               <button className="usr-modal-close" onClick={() => setUserModal(false)}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -712,8 +759,8 @@ export default function UsersPage() {
               {/* Email + Phone */}
               <div className="usr-mf-row">
                 <div className="usr-mf-group usr-mf-wide">
-                  <label className="usr-mf-label">Email Address <span className="usr-req">*</span></label>
-                  <input className="usr-mf-input" type="email" placeholder="e.g. user@tvarah.com" value={userForm.email} onChange={setF('email')} />
+                  <label className="usr-mf-label">Email Address {!editUserId && <span className="usr-req">*</span>}</label>
+                  <input className="usr-mf-input" type="email" placeholder="e.g. user@tvarah.com" value={userForm.email} onChange={setF('email')} disabled={!!editUserId} style={editUserId ? { opacity: 0.5, cursor: 'not-allowed' } : {}} />
                 </div>
                 <div className="usr-mf-group">
                   <label className="usr-mf-label">Phone</label>
@@ -752,7 +799,7 @@ export default function UsersPage() {
             <div className="usr-modal-ft">
               <button className="usr-modal-cancel" onClick={() => setUserModal(false)} disabled={saving}>Cancel</button>
               <button className="usr-modal-save" onClick={saveUser} disabled={saving}>
-                {saving ? 'Creating…' : 'Create User'}
+                {saving ? (editUserId ? 'Saving…' : 'Creating…') : (editUserId ? 'Save Changes' : 'Create User')}
               </button>
             </div>
           </div>
